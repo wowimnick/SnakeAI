@@ -1,64 +1,86 @@
 import pygame
 from pygame.locals import *
 import sys
-def draw_block():
-    surface.fill((2, 0, 50))
-    surface.blit(block,(block_x,block_y))
-    #pygame.display.flip()
+import time
 
 
-def drawGrid():
-    blockSize = 20 #Set the size of the grid block
-    for x in range(0, WINDOW_WIDTH, blockSize):
-        for y in range(0, WINDOW_HEIGHT, blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(surface, WHITE, rect, 1)
+class Snake:
+    def __init__(self, parent_screen):
+        self.parent_screen = parent_screen
+        self.block_x = 100
+        self.block_y = 100
 
-if __name__ == "__main__":
-    BLACK = (0, 0, 0)
-    WHITE = (50, 50, 50)
-    WINDOW_HEIGHT = 920
-    WINDOW_WIDTH = 920
-    block_x = 100
-    block_y = 100
+        self.block = pygame.image.load("head.png").convert()
+        self.block = pygame.transform.scale(self.block, (20, 20))
+
+    def draw(self):
+        self.parent_screen.fill((2, 0, 50))
+        self.parent_screen.blit(self.block, (self.block_x, self.block_y))
+        self.parent_screen.blit(self.block, (self.block_x, self.block_y))
+
+    def move_left(self):
+        self.block_x -= 20
+        self.draw()
+
+    def move_right(self):
+        self.block_x += 20
+        self.draw()
+
+    def move_up(self):
+        self.block_y += 20
+        self.draw()
+
+    def move_down(self):
+        self.block_y -= 20
+        self.draw()
 
 
-    pygame.init()
-    surface = pygame.display.set_mode((WINDOW_HEIGHT, WINDOW_WIDTH))
-    surface.fill((2, 0, 50))
+class Game:
+    def __init__(self):
+        self.BLACK = (0, 0, 0)
+        self.WHITE = (50, 50, 50)
+        self.WINDOW_HEIGHT = 920
+        self.WINDOW_WIDTH = 920
 
-    block = pygame.image.load("head.png").convert()
-    block = pygame.transform.scale(block, (20, 20))
+        pygame.init()
+        self.surface = pygame.display.set_mode((self.WINDOW_HEIGHT, self.WINDOW_WIDTH))
+        self.surface.fill((2, 0, 50))
+        self.snake = Snake(self.surface)
+        self.snake.draw()
 
-    surface.blit(block,(block_x,block_y))
+    def run(self):
+        running = True
 
-    display = (WINDOW_HEIGHT, WINDOW_WIDTH)
-    pygame.display.flip()
-    running = True
+        while running:
+            game.drawGrid()
+            pygame.display.flip()
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    if event.key == K_w:
+                        self.snake.move_up()
+                    if event.key == K_a:
+                        self.snake.move_left()
+                    if event.key == K_s:
+                        self.snake.move_down()
+                    if event.key == K_d:
+                        self.snake.move_right()
 
-    while running:
-        drawGrid()
-        pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == KEYDOWN:
-                if event.key == K_w:
-                    block_y -= 20
-                    draw_block()
-
-                if event.key == K_a:
-                    block_x -= 20
-                    draw_block()
-                if event.key == K_s:
-                    block_y += 20
-                    draw_block()
-                if event.key == K_d:
-                    block_x += 20
-                    draw_block()
-
-                elif event.key == K_ESCAPE:
+                    elif event.key == K_ESCAPE:
+                        pygame.quit()
+                        sys.exit(0)
+                elif event.type == QUIT:
                     pygame.quit()
                     sys.exit(0)
-            elif event.type == QUIT:
-                pygame.quit()
-                sys.exit(0)
-        pygame.time.wait(10)
+            pygame.time.wait(10)
+
+    def drawgrid(self):
+        blockSize = 20  # Set the size of the grid block
+        for x in range(0, self.WINDOW_WIDTH, blockSize):
+            for y in range(0, self.WINDOW_HEIGHT, blockSize):
+                rect = pygame.Rect(x, y, blockSize, blockSize)
+                pygame.draw.rect(self.surface, self.WHITE, rect, 1)
+
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()
