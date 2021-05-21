@@ -3,65 +3,8 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import pyglet
+from definitions import *
 
-vertexes = (
-    (1, -1, -1),
-    (1, 1, -1),
-    (-1, 1, -1),
-    (-1, -1, -1),
-    (1, -1, 1),
-    (1, 1, 1),
-    (-1, -1, 1),
-    (-1, 1, 1)
-)
-
-line = (
-    (0, 10, 0),
-    (0, -10, 0)
-)
-
-lineedge = (
-    (0, 1)
-)
-
-edges = (
-    (0, 1),
-    (0, 3),
-    (0, 4),
-    (2, 1),
-    (2, 3),
-    (2, 7),
-    (6, 3),
-    (6, 4),
-    (6, 7),
-    (5, 1),
-    (5, 4),
-    (5, 7)
-)
-
-faces = (
-    (0, 1, 2, 3),
-    (3, 2, 7, 6),
-    (6, 7, 5, 4),
-    (4, 5, 1, 0),
-    (1, 5, 7, 2),
-    (4, 0, 3, 6)
-)
-
-colors = (
-    (1, 0, 0),
-    (0, 1, 0),
-    (0, 0, 1),
-    (0, 0, 0),
-    (1, 1, 1),
-    (0, 1, 1),
-    (1, 0, 0),
-    (0, 1, 0),
-    (0, 0, 1),
-    (0, 0, 0),
-    (1, 1, 1),
-    (0, 1, 1)
-)
 
 
 def Cube():
@@ -71,7 +14,7 @@ def Cube():
         x = 0
         for vertex in face:
             x += 1
-            glColor3fv(colors[x])
+            glColor3fv((1, 1, 1))
             glVertex3fv(vertexes[vertex])
     glEnd()
 
@@ -94,15 +37,30 @@ def Line():
     glEnd()
 
 
+def head():
+    glBegin(GL_QUADS)
+    for face in snakefaces:
+        for vertex in face:
+            glColor3fv((0, 255, 0))
+            glVertex3fv(snake[vertex])
+    glEnd()
+
+    glBegin(GL_LINES)
+    for edge in snakeedges:
+        for vertex in edge:
+            glColor3fv((0, 0, 0))
+            glVertex3fv(snake[vertex])
+
+    glEnd()
+
+
 def main():
     pygame.init()
-    display = (600, 920)
+    display = (920, 920)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
     glTranslatef(0.0, 0.0, -5)
     glRotatef(0, 0, 0, 0)
-    glLineWidth(2)
-
     while True:
         mouseMove = pygame.mouse.get_rel()
         glRotatef(mouseMove[0] * 0.3, 0.0, 1.0, 0.0)
@@ -113,7 +71,9 @@ def main():
                 quit()
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
         Line()
+        head()
         Cube()
 
         pygame.display.flip()
