@@ -12,6 +12,7 @@ class Snake:
 
         self.block = pygame.image.load("head.png").convert()
         self.block = pygame.transform.scale(self.block, (20, 20))
+        self.direction = 'right'
 
     def draw(self):
         self.parent_screen.fill((2, 0, 50))
@@ -19,21 +20,38 @@ class Snake:
         self.parent_screen.blit(self.block, (self.block_x, self.block_y))
 
     def move_left(self):
-        self.block_x -= 20
         self.draw()
+        if self.direction != "right":
+            self.direction = 'left'
 
     def move_right(self):
-        self.block_x += 20
         self.draw()
+        if self.direction != "left":
+            self.direction = 'right'
 
     def move_up(self):
-        self.block_y -= 20
         self.draw()
+        if self.direction != "down":
+            self.direction = 'up'
 
     def move_down(self):
-        self.block_y += 20
         self.draw()
+        if self.direction != "up":
+            self.direction = 'down'
 
+    def walk(self):
+        if self.direction == "left":
+            self.block_x -= 20
+            self.draw()
+        if self.direction == "right":
+            self.block_x += 20
+            self.draw()
+        if self.direction == "up":
+            self.block_y -= 20
+            self.draw()
+        if self.direction == "down":
+            self.block_y += 20
+            self.draw()
 
 class Game:
     def __init__(self):
@@ -72,6 +90,8 @@ class Game:
                     pygame.quit()
                     sys.exit(0)
             pygame.time.wait(10)
+            self.snake.walk()
+            time.sleep(0.2)
 
     def drawGrid(self):
         blockSize = 20  # Set the size of the grid block
