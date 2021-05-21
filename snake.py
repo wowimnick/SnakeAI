@@ -27,11 +27,11 @@ class Snake:
         self.draw()
 
     def move_up(self):
-        self.block_y += 20
+        self.block_y -= 20
         self.draw()
 
     def move_down(self):
-        self.block_y -= 20
+        self.block_y += 20
         self.draw()
 
 
@@ -73,7 +73,7 @@ class Game:
                     sys.exit(0)
             pygame.time.wait(10)
 
-    def drawgrid(self):
+    def drawGrid(self):
         blockSize = 20  # Set the size of the grid block
         for x in range(0, self.WINDOW_WIDTH, blockSize):
             for y in range(0, self.WINDOW_HEIGHT, blockSize):
