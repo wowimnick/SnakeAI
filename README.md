@@ -1,7 +1,7 @@
-# SnakeOpenGL
-Attempting to make a snake player vs player game in a 3d OpenGL environment with pygame.
+# SnakeAI
+Attempting to make a snake player vs player game in which the player battles other snakes with Deep learning AIs. (Similar to Tron)
 
 
-Nothing special about this game as of yet. Barely completed the actual 3d environment and its not yet playable.
+Nothing special about this game as of yet.
 
-Requirements: pygame, pyglet, pyopengl
+Requirements: pygame, time, random
