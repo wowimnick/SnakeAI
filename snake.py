@@ -23,8 +23,8 @@ class Snake:
         self.block = pygame.image.load("head.png").convert()
         self.block = pygame.transform.scale(self.block, (20, 20))
         self.direction = 'right'
-        self.y_food = random.randint(0, 920)
-        self.x_food = random.randint(0, 920)
+        self.x_food = random.randint(1, 46) * 20
+        self.y_food = random.randint(1, 46) * 20
 
     def draw(self):
         self.parent_screen.fill((2, 0, 50))
@@ -33,62 +33,55 @@ class Snake:
             self.parent_screen.blit(self.food, (self.x_food, self.y_food))
 
     def move_left(self):
-        self.draw()
         if self.direction != "right":
             self.direction = 'left'
 
     def move_right(self):
-        self.draw()
         if self.direction != "left":
             self.direction = 'right'
 
     def move_up(self):
-        self.draw()
         if self.direction != "down":
             self.direction = 'up'
 
     def move_down(self):
-        self.draw()
         if self.direction != "up":
             self.direction = 'down'
 
     def inc_length(self):
-        self.length += 1
         self.block_x.append(-1)
         self.block_y.append(-1)
+        self.length += 1
 
     def walk(self):
         for i in range(self.length - 1, 0, -1):
             self.block_x[i] = self.block_x[i - 1]
             self.block_y[i] = self.block_y[i - 1]
-            print(self.x_food, self.y_food)
             if self.block_x[0] + 20 > self.x_food > self.block_x[0] - 20 and self.block_y[
                 0] + 20 > self.y_food > self.block_y[0] - 20:
                 self.score += 1
                 self.inc_length()
 
-                self.x_food = random.randint(0, 920)
-                self.y_food = random.randint(0, 920)
+                self.x_food = random.randint(1, 46) * 20
+                self.y_food = random.randint(1, 46) * 20
 
-
-
-                self.draw()
                 print(self.score)
-                print(self.length)
 
         if self.direction == "left":
             self.block_x[0] -= 20
-            self.draw()
         if self.direction == "right":
             self.block_x[0] += 20
-            self.draw()
         if self.direction == "up":
             self.block_y[0] -= 20
-            self.draw()
         if self.direction == "down":
             self.block_y[0] += 20
-            self.draw()
 
+    def gameover(self):
+        if self.block_x[0] > 920 or self.block_y[0] > 920 or self.block_x[0] < 0 or self.block_y[0] < 0:
+            self.block_x[0] = 500
+            self.block_y[0] = 500
+            self.score = self.score - 1
+            print(self.score)
 
 class Game:
     def __init__(self):
@@ -103,9 +96,8 @@ class Game:
         self.snake = Snake(self.surface, 5)
 
     def run(self):
-        running = True
 
-        while running:
+        while True:
             game.drawGrid()
             pygame.display.flip()
 
@@ -127,8 +119,9 @@ class Game:
                     pygame.quit()
                     sys.exit(0)
             pygame.time.wait(10)
-            self.snake.draw()
             self.snake.walk()
+            self.snake.draw()
+            self.snake.gameover()
             time.sleep(0.15)
 
     def drawGrid(self):
