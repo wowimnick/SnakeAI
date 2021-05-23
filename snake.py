@@ -23,8 +23,8 @@ class Snake:
         self.block = pygame.image.load("head.png").convert()
         self.block = pygame.transform.scale(self.block, (20, 20))
         self.direction = 'right'
-        self.x_food = random.randint(1, 46) * 20
-        self.y_food = random.randint(1, 46) * 20
+        self.x_food = random.randint(1, 45) * 20
+        self.y_food = random.randint(1, 45) * 20
 
     def draw(self):
         self.parent_screen.fill((2, 0, 50))
@@ -81,7 +81,21 @@ class Snake:
             self.block_x[0] = 500
             self.block_y[0] = 500
             self.score = self.score - 1
+            self.block_x.append(1)
+            self.block_y.append(1)
+            self.length = 5
             print(self.score)
+        for i in range(len(self.block_x)):
+            if self.block_x[0] == self.block_x[i] and self.block_y[0] == self.block_y[i]:
+                if i > 0:
+                    self.block_x[0] = 500
+                    self.block_y[0] = 500
+                    self.score = self.score - 1
+                    print(self.score)
+                    self.block_x.append(1)
+                    self.block_y.append(1)
+                    self.length = 5
+
 
 class Game:
     def __init__(self):
@@ -89,11 +103,18 @@ class Game:
         self.WHITE = (50, 50, 50)
         self.WINDOW_HEIGHT = 920
         self.WINDOW_WIDTH = 920
+        pygame.font.init()
 
         pygame.init()
+        self.default_font = pygame.font.get_default_font()
+        self.font_renderer = pygame.font.Font(self.default_font, 20)
         self.surface = pygame.display.set_mode((self.WINDOW_HEIGHT, self.WINDOW_WIDTH))
         self.surface.fill((2, 0, 50))
         self.snake = Snake(self.surface, 5)
+
+    def numbers(self):
+        label = self.font_renderer.render(str(self.snake.score), True, (255, 255, 255))
+        self.snake.parent_screen.blit(label, (5, 1))
 
     def run(self):
 
@@ -122,6 +143,8 @@ class Game:
             self.snake.walk()
             self.snake.draw()
             self.snake.gameover()
+            self.numbers()
+
             time.sleep(0.15)
 
     def drawGrid(self):
