@@ -1,8 +1,12 @@
+import pygame
 import torch
 import random
 import numpy as np
 from collections import deque
-from game import SnakeGameAI, Direction, Point
+
+from pygame import display
+
+from game import SnakeGameAI, Direction, Point, font, WHITE
 from model import Linear_QNet, QTrainer
 from plot import plot
 
@@ -126,6 +130,7 @@ def train():
 
         if done:
             # train long memory, plot result
+
             game.reset()
             agent.n_games += 1
             agent.train_long_memory()
@@ -134,7 +139,7 @@ def train():
                 record = score
                 agent.model.save()
 
-            print('Game', agent.n_games, 'Score', score, 'Record:', record)
+            print('Episode: ', agent.n_games, 'Score ', score, 'Record: ', record)
 
             plot_scores.append(score)
             total_score += score

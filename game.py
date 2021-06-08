@@ -3,13 +3,12 @@ import random
 from enum import Enum
 from collections import namedtuple
 import numpy as np
+from plot import *
 
 pygame.init()
 default_font = pygame.font.get_default_font()
-font = pygame.font.Font(default_font, 20)
+font = pygame.font.SysFont("impact", 20)
 
-
-# font = pygame.font.SysFont('arial', 25)
 
 class Direction(Enum):
     RIGHT = 1
@@ -23,17 +22,20 @@ Point = namedtuple('Point', 'x, y')
 # rgb colors
 WHITE = (255, 255, 255)
 RED = (200, 0, 0)
-BLUE1 = (0, 0, 255)
-BLUE2 = (0, 100, 255)
-BLACK = (0, 0, 0)
+RED2 = (160, 0, 0)
+BLUE1 = (0, 100, 0)
+BLUE2 = (0, 255, 0)
+BLACK = (20, 20, 20)
 
 BLOCK_SIZE = 20
-SPEED = 100
+SPEED = 50
 
 
 class SnakeGameAI:
 
     def __init__(self, w=640, h=480):
+        self.ind = 0
+        self.episode = 0
         self.w = w
         self.h = h
         # init display
@@ -44,6 +46,7 @@ class SnakeGameAI:
 
     def reset(self):
         # init game state
+
         self.direction = Direction.RIGHT
 
         self.head = Point(self.w / 2, self.h / 2)
@@ -54,7 +57,9 @@ class SnakeGameAI:
         self.score = 0
         self.food = None
         self._place_food()
+        self.episode += 1
         self.frame_iteration = 0
+        self.ind = 0
 
     def _place_food(self):
         x = random.randint(0, (self.w - BLOCK_SIZE) // BLOCK_SIZE) * BLOCK_SIZE
@@ -79,6 +84,8 @@ class SnakeGameAI:
         reward = 0
         game_over = False
         if self.is_collision() or self.frame_iteration > 100 * len(self.snake):
+            self.ind = 1
+            self._update_ui()
             game_over = True
             reward = -10
             return reward, game_over, self.score
@@ -113,13 +120,23 @@ class SnakeGameAI:
         self.display.fill(BLACK)
 
         for pt in self.snake:
-            pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
-            pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x + 4, pt.y + 4, 12, 12))
+            if self.ind != 1:
+                pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+                pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x + 4, pt.y + 4, 12, 12))
+            elif self.ind == 1:
+                pygame.draw.rect(self.display, RED, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
+                pygame.draw.rect(self.display, RED2, pygame.Rect(pt.x + 4, pt.y + 4, 12, 12))
 
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
+        pygame.draw.rect(self.display, RED2, pygame.Rect(self.food.x + 4, self.food.y + 4, 12, 12))
+        text = font.render("SCORE » " + str(self.score), True, WHITE)
+        length = font.render("EPISODE » " + str(self.episode), True, WHITE)
+        iterations = font.render("STEPS LEFT » " + str(100 * len(self.snake) + 100 - self.frame_iteration), True,
+                                 WHITE)
 
-        text = font.render("Score: " + str(self.score), True, WHITE)
         self.display.blit(text, [0, 0])
+        self.display.blit(length, [0, 20])
+        self.display.blit(iterations, [0, 40])
         pygame.display.flip()
 
     def _move(self, action):

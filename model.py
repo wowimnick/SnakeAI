@@ -1,8 +1,9 @@
+import os
+
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import torch.nn.functional as F
-import os
+import torch.optim as optim
 
 
 class Linear_QNet(nn.Module):
@@ -23,6 +24,12 @@ class Linear_QNet(nn.Module):
 
         file_name = os.path.join(model_folder_path, file_name)
         torch.save(self.state_dict(), file_name)
+        print("Model has been saved")
+
+    def load(self):
+        torch.load('model/model.pth')
+        Linear_QNet.eval(self)
+        print("Model has been loaded")
 
 
 class QTrainer:
