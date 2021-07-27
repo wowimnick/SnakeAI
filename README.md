@@ -4,7 +4,7 @@
 This is a Q Learning snake game i made for fun using Python with PyTorch. 
 
 Info:
-  It uses a Feed Forward Sequential NN with a Linear QNet model.
+  Uses a Feed Forward Sequential NN.
   Currently only has basic graphing but it should be enough.
   Pretty much plays proficiantly after the 300th episode.
   Model saving is yet to be added but feel free to have fun with it.
