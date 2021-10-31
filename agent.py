@@ -3,6 +3,7 @@ import torch
 import random
 import numpy as np
 from collections import deque
+import pickle
 
 from pygame import display
 
@@ -82,7 +83,7 @@ class Agent:
 
         states, actions, rewards, next_states, dones = zip(*mini_sample)
         self.trainer.train_step(states, actions, rewards, next_states, dones)
-        # for state, action, reward, nexrt_state, done in mini_sample:
+        # for state, action, reward, next_state, done in mini_sample:
         #    self.trainer.train_step(state, action, reward, next_state, done)
 
     def train_short_memory(self, state, action, reward, next_state, done):
@@ -105,12 +106,26 @@ class Agent:
 
 
 def train():
+    with open('record.pickle', 'rb') as f:
+        record = pickle.load(f)
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
-    record = 0
     agent = Agent()
+    loadmodel = input("Would you like to load the existing model? Y/N ").upper()
+    if loadmodel == 'Y':
+        agent.model.load()
+    elif loadmodel == 'N':
+        print("Creating new model...")
+        with open('record.pickle', 'wb') as f:
+            record = 0
+
+    else:
+        print("Not a valid input.")
+        return
+
     game = SnakeGameAI()
+
     while True:
         # get old state
         state_old = agent.get_state(game)
@@ -137,6 +152,8 @@ def train():
 
             if score > record:
                 record = score
+                with open('record.pickle', 'wb') as f:
+                    pickle.dump(record, f)
                 agent.model.save()
 
             print('Episode: ', agent.n_games, 'Score ', score, 'Record: ', record)
