@@ -4,8 +4,6 @@
 A little reinforcement learning Snake game that i wanted to make for fun and practice. I will be improving and adding new features as i learn.
 
 Info:
-  Uses a Feed Forward Neural Network.
-  
   Currently only has basic graphing but it should be enough.
   
   Pretty much plays proficiantly after the 300th episode, although it does have issues with it trapping itself once it gets too long.
