@@ -1,13 +1,17 @@
 import matplotlib.pyplot as plt
 from IPython import display
+from scipy.interpolate import make_interp_spline
+import numpy as np
 
-plt.ion()
-fig = plt.figure()
+plt.style.use('ggplot')
 
 
-def plot(scores, mean_scores):
-    fig.patch.set_facecolor('xkcd:salmon')
+def start():
+    plt.ion()
+    fig = plt.figure()
+    return fig
 
+def plot(scores, mean_scores, fig):
     display.clear_output(wait=False)
     fig.canvas.toolbar.pack_forget()
     display.display(plt.gcf())

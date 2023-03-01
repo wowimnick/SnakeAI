@@ -1,4 +1,3 @@
-import pygame
 import torch
 import random
 import numpy as np
@@ -9,7 +8,7 @@ from pygame import display
 
 from game import SnakeGameAI, Direction, Point, font, WHITE
 from model import Linear_QNet, QTrainer
-from plot import plot
+import plot
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
@@ -103,29 +102,39 @@ class Agent:
             final_move[move] = 1
 
         return final_move
+    
+    def saveModel(self, record):
+        torch.save(self.model.state_dict(), 'model.pth')
+        with open('record.pickle', 'wb') as f:
+            pickle.dump(record, f)
+
+    def loadModel(self):
+        self.model.load_state_dict(torch.load('model.pth'))
+        with open('record.pickle', 'rb') as f:
+            record = pickle.load(f)
+        return record
 
 
 def train():
-    with open('record.pickle', 'rb') as f:
-        record = pickle.load(f)
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
     agent = Agent()
-    loadmodel = input("Would you like to load the existing model? Y/N ").upper()
-    if loadmodel == 'Y':
-        agent.model.load()
-    elif loadmodel == 'N':
-        print("Creating new model...")
-        with open('record.pickle', 'wb') as f:
+    while True:
+        loadmodel = input("Would you like to load the existing model? Y/N ").upper()
+        if loadmodel == 'Y':
+            record = agent.loadModel()
+            break
+        elif loadmodel == 'N':
             record = 0
-
-    else:
-        print("Not a valid input.")
-        return
+            print("Continuing and overwriting save")
+            break
+        else:
+            print("Not a valid input.")
+            
 
     game = SnakeGameAI()
-
+    
     while True:
         # get old state
         state_old = agent.get_state(game)
@@ -152,8 +161,7 @@ def train():
 
             if score > record:
                 record = score
-                with open('record.pickle', 'wb') as f:
-                    pickle.dump(record, f)
+                agent.saveModel(record)
                 agent.model.save()
 
             print('Episode: ', agent.n_games, 'Score ', score, 'Record: ', record)
@@ -162,8 +170,9 @@ def train():
             total_score += score
             mean_score = total_score / agent.n_games
             plot_mean_scores.append(mean_score)
-            plot(plot_scores, plot_mean_scores)
-
+            if 'fig' not in locals():
+                fig = plot.start()
+            plot.plot(plot_scores, plot_mean_scores, fig)
 
 if __name__ == '__main__':
     train()
