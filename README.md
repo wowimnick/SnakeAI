@@ -17,5 +17,5 @@ Info:
 
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/65257805/121124905-b3a75380-c7f3-11eb-9f87-b2a632a05051.gif)
 
-Requirements: pytorch, numpy, pygame, time, random, os, matplotlib, iPython, pickle
+Requirements: ipython==8.11.0, matplotlib==3.6.2, numpy==1.23.4, pygame==2.2.0, torch==1.13.1
 
