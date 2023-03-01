@@ -5,6 +5,7 @@ A reinforcement learning Snake game that i wanted to make for fun and practice.
 
 
 Info:
+
   •	As seen in the GIF, there is a graph which displays the score from the previous episodes.
   
   •	The model plays proficiantly after ~300 episodes, although it does have issues with it trapping itself once it gets too long.
