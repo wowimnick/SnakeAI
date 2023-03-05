@@ -17,30 +17,6 @@ class Linear_QNet(nn.Module):
         x = self.linear2(x)
         return x
 
-    def save(self, file_name='model.pth'):
-        model_folder_path = './model'
-        if not os.path.exists(model_folder_path):
-            os.makedirs(model_folder_path)
-
-        file_name = os.path.join(model_folder_path, file_name)
-
-        torch.save(self.state_dict(), file_name)
-        print("Model has been saved")
-
-    def load(self, file_name='model.pth'):
-        model_folder_path = './model'
-        file_name = os.path.join(model_folder_path, file_name)
-
-        if os.path.isfile(file_name):
-            self.load_state_dict(torch.load(file_name))
-            self.eval()
-            print('Loading existing state dict.')
-            return True
-
-        print('No existing state dict found. Starting from scratch.')
-        return False
-
-
 class QTrainer:
     def __init__(self, model, lr, gamma):
         self.lr = lr
